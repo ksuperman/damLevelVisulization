@@ -3,8 +3,9 @@ var router = express.Router();
 var resv = require('./model');
 /* GET home page. */
 
-
 router.get('/getAllResv', function(req, res, next) {
+	console.log("/getAllResv");
+	
 	var resvInstance = new resv({
 	    resv_name: "dummy",
 	    resv_lat: "11.1",

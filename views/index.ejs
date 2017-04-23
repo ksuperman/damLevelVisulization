@@ -1,11 +1,222 @@
 <!DOCTYPE html>
 <html>
-  <head>
+<head>
     <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-  </head>
-  <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
-  </body>
+    <link rel='stylesheet' href='/stylesheets/style.css'/>
+    <link rel="stylesheet" href="/stylesheets/levels.css">
+    <link rel="stylesheet" href="/stylesheets/novaheader.css">
+    <link rel="stylesheet" href="/stylesheets/nova.css">
+
+    <script src="https://code.jquery.com/jquery-3.2.1.js"
+            integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"
+            integrity="sha256-T0Vest3yCU7pafRw9r+settMBX6JkKN06dqBnpQ8d30=" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
+
+    <script src="/javascripts/apps.js"></script>
+</head>
+<body ng-app="resvApp" ng-controller="mycontrol">
+<div id="map"></div>
+<div id="menu">
+    <select id="regions-select" data-intro="Select a lake from this drop down" data-position="right"
+            class="lake-select">
+        <option
+        value="Erie" data-region="1">Lake Trinity</option>
+        <option
+        value="Huron" data-region="2">Shasta Reservoir</option>
+        <option
+        value="Michigan" data-region="3">Lake Oroville</option>
+        <option
+        value="Ontario" data-region="4">Folsom Lake</option>
+    </select>
+    <script type="text/javascript">
+        $("#reservoirs").click(function() {
+            var $res = $("#reservoirs");
+            var vals;
+
+            $.getJSON("data.json", function(data) {
+
+                vals=data;
+                $res.empty();
+                $.each(vals.details, function(index, element) {
+                    $res.append("<option>" + element.name + "</option>");
+                });
+            });
+        });
+    </script>
+    <div class="indicator_container">
+
+        <h5 id="indicatorLakeName">Lake Trinity Water Level</h5>
+
+        <div class="indicator">
+
+            <!-- water level -->
+            <div class="level plus2"></div>
+
+            <!-- water level values left side -->
+            <div class="level-markers-container left">
+                <div class="tick" data-level="6" data-intro="Raise and lower water levels" data-position="right"><span
+                            class="mark"></span><span class="val">251.3ft</span></div>
+                <div class="tick active" data-level="5"><span class="mark"></span><span class="val">250.3ft</span></div>
+                <div class="tick" data-level="4"><span class="mark"></span><span class="val">249.3ft</span></div>
+                <div class="tick" data-level="3"><span class="mark"></span><span class="val">248.3ft</span></div>
+                <div class="tick" data-level="2"><span class="mark"></span><span class="val">247.3ft</span></div>
+                <div class="tick" data-level="1"><span class="mark"></span><span class="val">246.3ft</span></div>
+                <div class="tick" data-level="0"><span class="mark"></span><span class="val">245.3ft</span></div>
+                <div class="tick" data-level="-1"><span class="mark"></span><span class="val">244.3ft</span></div>
+                <div class="tick" data-level="-2"><span class="mark"></span><span class="val">243.3ft</span></div>
+                <div class="tick" data-level="-3"><span class="mark"></span><span class="val">242.3ft</span></div>
+                <div class="tick" data-level="-4"><span class="mark"></span><span class="val">241.3ft</span></div>
+                <div class="tick" data-level="-5"><span class="mark"></span><span class="val">240.3ft</span></div>
+                <div class="tick" data-level="-6"><span class="mark"></span><span class="val">239.3ft</span></div>
+            </div>
+
+            <!-- water level values right side -->
+            <div class="level-markers-container right">
+                <div class="tick" data-level="6"><span class="mark"></span><span class="val">6.0ft</span></div>
+                <div class="tick active" data-level="5"><span class="mark"></span><span class="val">5.0ft</span></div>
+                <div class="tick" data-level="4"><span class="mark"></span><span class="val">4.0ft</span></div>
+                <div class="tick" data-level="3"><span class="mark"></span><span class="val">3.0ft</span></div>
+                <div class="tick" data-level="2"><span class="mark"></span><span class="val">2.0ft</span></div>
+                <div class="tick" data-level="1"><span class="mark"></span><span class="val">1.0ft</span></div>
+                <div class="tick" data-level="0"><span class="mark"></span><span
+                            class="val LTA">Long Term<br>Average</span></div>
+                <div class="tick" data-level="-1"><span class="mark"></span><span class="val">-1.0ft</span></div>
+                <div class="tick" data-level="-2"><span class="mark"></span><span class="val">-2.0ft</span></div>
+                <div class="tick" data-level="-3"><span class="mark"></span><span class="val">-3.0ft</span></div>
+                <div class="tick" data-level="-4"><span class="mark"></span><span class="val">-4.0ft</span></div>
+                <div class="tick" data-level="-5"><span class="mark"></span><span class="val">-5.0ft</span></div>
+                <div class="tick" data-level="-6"><span class="mark"></span><span class="val">-6.0ft</span></div>
+            </div>
+
+            <!-- Records and Averages markers -->
+            <div class="max record-level" style="height: 78.9231%;">
+                <p id="recordHigh" class="text-center">High (248.6 ft)</p>
+            </div>
+            <div class="min record-level" style="height: 27.9231%;">
+                <p id="recordLow" class="text-center">Low (241.9 ft)</p>
+            </div>
+            <div class="current record-level" style="height: 60.2308%;">
+                <p id="recordCurrent" class="text-center">Current (246.1 ft)</p>
+            </div>
+
+            <!-- Active Level Select Window -->
+            <div class="level-btn-wrap plus7">
+                <div class="gauge-window"></div>
+            </div>
+
+        </div>
+
+        <!-- Indicator utilities toggle switches -->
+        <div class="toggles" data-intro="Change water level options" data-position="right">
+            <ul>
+            </ul>
+        </div><!-- /toggles -->
+
+    </div>
+</div>
+<script>
+    function initMap() {
+        var myLatLng = {lat: 40.969023, lng: -122.682816};
+        var styles = [
+            {elementType: 'geometry', stylers: [{color: '#242f3e'}]},
+            {elementType: 'labels.text.stroke', stylers: [{color: '#242f3e'}]},
+            {elementType: 'labels.text.fill', stylers: [{color: '#746855'}]},
+            {
+                featureType: 'administrative.locality',
+                elementType: 'labels.text.fill',
+                stylers: [{color: '#d59563'}]
+            },
+            {
+                featureType: 'poi',
+                elementType: 'labels.text.fill',
+                stylers: [{color: '#d59563'}]
+            },
+            {
+                featureType: 'poi.park',
+                elementType: 'geometry',
+                stylers: [{color: '#263c3f'}]
+            },
+            {
+                featureType: 'poi.park',
+                elementType: 'labels.text.fill',
+                stylers: [{color: '#6b9a76'}]
+            },
+            {
+                featureType: 'road',
+                elementType: 'geometry',
+                stylers: [{color: '#38414e'}]
+            },
+            {
+                featureType: 'road',
+                elementType: 'geometry.stroke',
+                stylers: [{color: '#212a37'}]
+            },
+            {
+                featureType: 'road',
+                elementType: 'labels.text.fill',
+                stylers: [{color: '#9ca5b3'}]
+            },
+            {
+                featureType: 'road.highway',
+                elementType: 'geometry',
+                stylers: [{color: '#746855'}]
+            },
+            {
+                featureType: 'road.highway',
+                elementType: 'geometry.stroke',
+                stylers: [{color: '#1f2835'}]
+            },
+            {
+                featureType: 'road.highway',
+                elementType: 'labels.text.fill',
+                stylers: [{color: '#f3d19c'}]
+            },
+            {
+                featureType: 'transit',
+                elementType: 'geometry',
+                stylers: [{color: '#2f3948'}]
+            },
+            {
+                featureType: 'transit.station',
+                elementType: 'labels.text.fill',
+                stylers: [{color: '#d59563'}]
+            }, {
+                "featureType": "water",
+                "elementType": "geometry.fill",
+                "stylers": [
+                    {
+                        "color": "#3579c3"
+                    },
+                    {
+                        "saturation": 50
+                    }
+                ]
+            },
+            {
+                "featureType": "water",
+                "elementType": "labels.text.fill",
+                "stylers": [
+                    {
+                        "color": "#3d3d3d"
+                    }
+                ]
+            }
+        ]
+        // Styles a map in night mode.
+        var map = new google.maps.Map(document.getElementById('map'), {
+            center: myLatLng,
+            zoom: 12
+        });
+        var marker = new google.maps.Marker({
+            position: myLatLng,
+            map: map,
+            title: 'Lake Trinity'
+        });
+        map.setMapTypeId('hybrid');
+    }
+</script>
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBkCTU2Y9aFbB9drohYCxuFIs_FuDaSrpQ&callback=initMap"></script>
+</body>
 </html>
